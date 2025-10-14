@@ -28,7 +28,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  bool? _checkedBox = false;
+  final List<bool> _checkedBox = [true, false, true, false, true];
 
   @override
   Widget build(BuildContext context) {
@@ -59,13 +59,15 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         child: ListView(
           children: [
-            // TODO iterate on your state
-            Checkbox(
-              value: true, // TODO use state
-              onChanged: (value) {
-                // TODO implement a function that inverts this checkbox
-              },
-            ),
+            for (final (i, element) in _checkedBox.indexed)
+              Checkbox(
+                value: element, // ✅ TODO use state
+                onChanged: (value) {
+                  setState(() {
+                    _checkedBox[i] = value!;
+                  }); // ✅ TODO implement a function that inverts this checkbox
+                },
+              ),
           ],
         ),
       ),
