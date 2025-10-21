@@ -38,9 +38,25 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
         actions: [
           ElevatedButton.icon(
+            // ✅ Clear All Button
+            icon: Icon(Icons.clear),
+            onPressed: () {
+              setState(() {
+                _checkedBox.clear();
+              });
+            },
+            label: const Text("Clear"),
+          ),
+          SizedBox(width: 40),
+          ElevatedButton.icon(
             icon: Icon(Icons.refresh),
             onPressed: () {
-              // TODO: implement a function that resets all state to initial
+              setState(() {
+                for (final (i, _) in _checkedBox.indexed) {
+                  _checkedBox[i] = false;
+                }
+              });
+              // ✅ TODO: implement a function that resets all state to initial
               print("reset");
             },
             label: const Text('Reset All'),
@@ -49,7 +65,12 @@ class _MyHomePageState extends State<MyHomePage> {
           ElevatedButton.icon(
             icon: Icon(Icons.invert_colors),
             onPressed: () {
-              // TODO implement a function that inverts all states
+              setState(() {
+                for (final (i, _) in _checkedBox.indexed) {
+                  _checkedBox[i] = !_checkedBox[i];
+                }
+              });
+              // ✅ TODO implement a function that inverts all states
             },
             label: const Text('Invert All'),
           ),
@@ -74,7 +95,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // TODO implement a function that adds a checkbox to state
+          setState(() {
+            _checkedBox.add(false);
+          });
+          // ✅ TODO implement a function that adds a checkbox to state
         },
         child: Icon(Icons.add),
       ),
