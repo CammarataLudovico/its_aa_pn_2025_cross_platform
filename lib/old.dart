@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'form.dart';
-import 'todo.dart';
+import 'package:progetto_lezione_4/todo.dart';
 
 void main() {
   runApp(const MyApp());
@@ -30,6 +29,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final List<bool> _checkedBox = [true, false, true, false, true];
   final _list = <Todo>[];
 
   @override
@@ -40,68 +40,71 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
         actions: [
           ElevatedButton.icon(
+            // ✅ Clear All Button
+            icon: Icon(Icons.clear),
+            onPressed: () {
+              setState(() {
+                _checkedBox.clear();
+              });
+            },
+            label: const Text("Clear"),
+          ),
+          SizedBox(width: 40),
+          ElevatedButton.icon(
             icon: Icon(Icons.refresh),
             onPressed: () {
               setState(() {
-                _list.clear();
+                for (final (i, _) in _checkedBox.indexed) {
+                  _checkedBox[i] = false;
+                }
               });
+              // ✅ TODO: implement a function that resets all state to initial
+              print("reset");
             },
             label: const Text('Reset All'),
           ),
-          SizedBox(width: 8),
+          SizedBox(width: 40),
           ElevatedButton.icon(
             icon: Icon(Icons.invert_colors),
             onPressed: () {
               setState(() {
-                for (var i = 0; i < _list.length; i++) {
-                  _list[i].isDone = !_list[i].isDone;
+                for (final (i, _) in _checkedBox.indexed) {
+                  _checkedBox[i] = !_checkedBox[i];
                 }
               });
+              // ✅ TODO implement a function that inverts all states
             },
             label: const Text('Invert All'),
           ),
-          SizedBox(width: 20),
+          SizedBox(width: 40),
         ],
       ),
       body: Center(
         child: ListView(
           children: [
-            if (_list.isEmpty) //
-              Text("non c'è niente"),
-            for (final (i, todo) in _list.indexed)
-              CheckboxListTile(
-                value: todo.isDone,
-                title: Text(todo.title),
-                subtitle: Text(todo.description),
+            // se la lista è vuota, allora mostra all'utente "non c'è niente"
+            for (final (i, element) in _checkedBox.indexed)
+              Checkbox(
+                value: element, // ✅ TODO use state
                 onChanged: (value) {
-                  if (value == null) return;
                   setState(() {
-                    _list[i].isDone = value;
-                  });
+                    _checkedBox[i] = value!;
+                  }); // ✅ TODO implement a function that inverts this checkbox
                 },
               ),
           ],
         ),
       ),
+
       floatingActionButton: FloatingActionButton(
-        onPressed: _createTodo,
+        onPressed: () {
+          setState(() {
+            _checkedBox.add(false);
+          });
+          // ✅ TODO implement a function that adds a checkbox to state
+        },
         child: Icon(Icons.add),
       ),
     );
-  }
-
-  Future<void> _createTodo() async {
-    final result = await showDialog<Todo>(
-      context: context,
-      builder: (context) {
-        return AddTodoFormDialog();
-      },
-    );
-
-    if (result == null) return; // significa che il dialog è stato annullato
-
-    setState(() {
-      _list.add(result);
-    });
   }
 }
